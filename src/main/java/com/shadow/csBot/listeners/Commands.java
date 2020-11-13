@@ -1,32 +1,68 @@
 package com.shadow.csBot.listeners;
 
+import com.shadow.Embed;
 import com.shadow.csBot.Const;
 import com.shadow.csBot.Logger;
+import com.shadow.csBot.SlackMessage;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.awt.*;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
-import static com.shadow.csBot.SlackMessage.SendSlackMessage;
+import static com.shadow.csBot.SlackMessage.send;
 
 class Commands {
+    public static void Help(User user) {
+        try {
+            user.openPrivateChannel().queue(channel -> {
+                Embed eb = new Embed("CSBot help",
+                        Color.orange,
+                        "All of the following commands have a '!' before them.",
+                        "*Note: There are some hidden commands and commands that are for admins only that aren't listed here.");
+
+//                eb.addField("!help", "gives you a dm with help", false);
+                eb.addField("!ping", "sends pong", false);
+                eb.addField("!alert", "Alerts server owner", false);
+                eb.addField("!spell", "casts a magic spell", false);
+                eb.addField("!choose <users>", "chooses 1 of the mentioned users", false);
+                eb.addField("!d <sides> <rolls>", "rolls a dice of the defined sides a defined number of times", true);
+                eb.addField("!sus <users", "chooses 1 of the mentioned users", false);
+                eb.addField("!7", "sends 7", false);
+                eb.addField("!bald", "sends pictures of bald", false);
+                eb.addField("!gordon", "sends gordon", false);
+                eb.addField("!monke", "sends monke pictures", false);
+                eb.addField("!28sw", "sends Connor", false);
+                eb.addField("!brankee", "Brim with no yankee or yankee with no brim?", false);
+                eb.addField("!kachow", "Lightning Mcqueen", false);
+                eb.addField("!tonk", "T O N K", false);
+                eb.addField("!py\\`\\`\\` <code> \\`\\`\\`", "you can run python code", false);
+
+
+                channel.sendMessage(eb.build()).queue();
+            });
+        } catch (IllegalStateException ignored) {}
+    }
+
     public static void PingPong(MessageChannel channel) {
         channel.sendMessage("pong!").queue();
     }
 
     public static void Announce(Guild g, Member member, Message message, MessageChannel channel) {
-        if (member.getRoles().contains(Const.ADMIN_ID)) {
+        if (member.getRoles().contains(member.getGuild().getRoleById(Const.ADMIN_ID))) {
 
             String args = message.getContentRaw().replace("!announce", "");
             channel.sendMessage("Announcing ```" + args + "```").queue();
-            g.getTextChannelById("768272891933884417")
+            Objects.requireNonNull(
+                    g.getTextChannelById(Const.ANNOUNCEMENT_CHANNEL))
                     .sendMessage("<@everyone> " + args).queue();
         }
     }
 
     public static void Alert(Member member, MessageChannel channel) {
-        SendSlackMessage("You are needed by " + member.getEffectiveName());
+        send("You are needed by " + member.getEffectiveName());
         channel.sendMessage("Summoning Christian").queue();
     }
 
@@ -261,12 +297,12 @@ class Commands {
                          }
                      } else {
                          System.out.println("Delete failed");
-                         SendSlackMessage("Deletion of tmp python file failed");
+                         send("Deletion of tmp python file failed");
                      }
                  }
              } catch (IOException e) {
                  System.out.println("An error occurred:");
-                 SendSlackMessage("An IOException occurred");
+                 send("An IOException occurred");
                  e.printStackTrace();
              }
          }
@@ -308,7 +344,7 @@ class Commands {
 
              } catch (IOException e) {
                  System.out.println("An error occurred");
-                 SendSlackMessage("An IOException occurred");
+                 send("An IOException occurred");
                  e.printStackTrace();
              }
 
@@ -356,12 +392,12 @@ class Commands {
                         }
                     } else {
                         System.out.println("Delete failed");
-                        SendSlackMessage("Deletion of tmp python file failed");
+                        send("Deletion of tmp python file failed");
                     }
                 }
             } catch (IOException e) {
                 System.out.println("An error occurred:");
-                SendSlackMessage("An IOException occurred:\n" + e.getMessage());
+                send("An IOException occurred:\n" + e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -406,7 +442,7 @@ class Commands {
 
             } catch (IOException e) {
                 System.out.println("An error occurred");
-                SendSlackMessage("An IOException occurred:\n" + e.getMessage());
+                send("An IOException occurred:\n" + e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -427,6 +463,7 @@ class Commands {
                             .setName("done")
                             .queue();
                     channel.sendMessage("Test started").queue();
+                    SlackMessage.send("Test started");
                 } else {
                     channel.sendMessage("Test has already been started").queue();
                 }
@@ -439,18 +476,10 @@ class Commands {
                     if (a.getName().equals("done")) {
                         a.delete().queue();
 
-                        if (shouldMessage) channel.sendMessage("Test done!").queue();
-                    }
-                });
-            }
-        }
-
-        public static void Stop(Guild g, Member member, MessageChannel channel) {
-            if (member.getId().equals(Const.OWNER_ID)) {
-                g.getRoles().forEach(a -> {
-                    if (a.getName().equals("done")) {
-                        a.delete().queue();
-                        channel.sendMessage("Test done!").queue();
+                        if (shouldMessage) {
+                            channel.sendMessage("Test done!").queue();
+                            SlackMessage.send("Test stopped");
+                        }
                     }
                 });
             }
@@ -468,6 +497,8 @@ class Commands {
                 g.addRoleToMember(member, Objects.requireNonNull(
                         g.getRoleById(Objects.requireNonNull(r).getId())
                 )).queue();
+                channel.sendMessage(member.getEffectiveName() + " is now done").queue();
+
             } else {
                 channel.sendMessage("No test is started").queue();
             }

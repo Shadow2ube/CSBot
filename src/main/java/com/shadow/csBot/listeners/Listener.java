@@ -1,5 +1,6 @@
 package com.shadow.csBot.listeners;
 
+import com.shadow.csBot.Const;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -26,13 +27,13 @@ public class Listener extends ListenerAdapter {
 
         //region Hidden commands
 
-        if (args[0].equals("I'm") || args[0].equals("I'M") || args[0].equals("i'm") || args[0].equals("i'M")) {
+        if (args[0].equalsIgnoreCase("I'm")) {
 
             StringBuilder _tmp = new StringBuilder();
             for (int i = 0; i < args.length; i++) {
-                if (args[i].equals("sad") || args[i].equals("gay") || args[i].equals("depressed")
-                        || args[i].equals("gae") || args[i].equals("suicidal") || args[i].equals("stupid")
-                        || args[i].equals("dumb")) {
+                if (args[i].equalsIgnoreCase("sad") || args[i].equalsIgnoreCase("gay") || args[i].equalsIgnoreCase("depressed")
+                        || args[i].equalsIgnoreCase("gae") || args[i].equalsIgnoreCase("suicidal") || args[i].equalsIgnoreCase("stupid")
+                        || args[i].equalsIgnoreCase("dumb")) {
 
                     event.getChannel().sendMessage("LOL\nI know.").queue();
                     event.getChannel().sendMessage("I know.").queue();
@@ -44,28 +45,33 @@ public class Listener extends ListenerAdapter {
                 }
             }
 
-            event.getChannel().sendMessage("Hi" + _tmp + " I'm Dad!").queue();
+            event.getChannel().sendMessage("Hi" + _tmp + ", I'm Dad!").queue();
         }
 
         for (String arg : args) {
-            if (arg.contains("kerchew") || arg.contains("kachow")) {
-                Commands.misc.Kachow(channel);
-            }
-            else if (arg.contains("tonk") || arg.contains("thunk") || arg.contains("tink")) {
+            if (arg.contains("tonk")
+                    || arg.contains("thunk")
+                    || arg.contains("thonk")
+                    || arg.contains("tink")) {
                 Commands.misc.Tonk(channel);
             }
         }
 
         Member[] mentioned = event.getMessage().getMentionedMembers().toArray(new Member[0]);
         for (Member m : mentioned) {
-            if (m == event.getGuild().getMemberById("771076825098616892")) {
+            if (m == event.getGuild().getMemberById(Const.CSBOT_ID)) {
                 event.getChannel().sendMessage("You summoned me?").queue();
             }
         }
 
         //endregion
 
-        if (args[0].equals(prefix + "ping")) {
+        if (args[0].equalsIgnoreCase(prefix + "help")) {
+            Commands.Help(event.getAuthor());
+            print("Command '!help' used by "+ member.getEffectiveName());
+        }
+
+        else if (args[0].equalsIgnoreCase(prefix + "ping")) {
             Commands.PingPong(channel);
             print("Command '!ping' used by "+ member.getEffectiveName());
 
@@ -73,11 +79,11 @@ public class Listener extends ListenerAdapter {
             Commands.Announce(guild, member, message, channel);
             print("Command '!announce' used by " + member.getEffectiveName());
 
-        } else if (args[0].equals(prefix + "alert")) {
+        } else if (args[0].equalsIgnoreCase(prefix + "alert")) {
             Commands.Alert(member, channel);
             print("Command '!alert' used by " + member.getEffectiveName());
 
-        } else if (args[0].equals(prefix + "spell")) {
+        } else if (args[0].equalsIgnoreCase(prefix + "spell")) {
             Commands.Spell(channel);
             print("Command '!spell' used by " + member.getEffectiveName());
 
@@ -85,7 +91,7 @@ public class Listener extends ListenerAdapter {
             Commands.Choose(message, channel);
             print("Command '!choose' used by " + member.getEffectiveName());
 
-        } else if (args[0].startsWith(prefix + "d")) {
+        } else if (args[0].equals(prefix + "d")) {
             Commands.Dice(args, channel);
             print("Command '!d' used by " + member.getEffectiveName());
 
@@ -98,48 +104,54 @@ public class Listener extends ListenerAdapter {
             Commands.misc.Sus(message, channel);
             print("Command '!sus' used by " + member.getEffectiveName());
 
-        } else if (args[0].equals(prefix + "7")) {
+        } else if (args[0].equalsIgnoreCase(prefix + "7")) {
             Commands.misc.Seven(channel);
             print("Command '!7' used by " + member.getEffectiveName());
 
-        } else if (args[0].equals(prefix + "bald")) {
+        } else if (args[0].equalsIgnoreCase(prefix + "bald")) {
             Commands.misc.Bald(channel);
             print("Command '!bald' used by " + member.getEffectiveName());
 
-        } else if (args[0].equals(prefix + "gordon")) {
+        } else if (args[0].equalsIgnoreCase(prefix + "gordon")) {
             Commands.misc.Gordon(channel);
             print("Command '!gordon' used by " + member.getEffectiveName());
 
-        } else if (args[0].equals(prefix + "monke")) {
+        } else if (args[0].equalsIgnoreCase(prefix + "monke")) {
             Commands.misc.Monke(channel);
             print("Command '!monke' used by " + member.getEffectiveName());
 
-        } else if (args[0].equals(prefix + "28sw")) {
+        } else if (args[0].equalsIgnoreCase(prefix + "28sw")) {
             Commands.misc.StabWounds(channel);
             print("Command '!28sw' used by " + member.getEffectiveName());
 
-        } else if (args[0].equals(prefix + "brankee")
-                || args[0].equals(prefix + "yankee")
-                || args[0].equals(prefix + "brim")) {
+        } else if (args[0].equalsIgnoreCase(prefix + "brankee")
+                || args[0].equalsIgnoreCase(prefix + "yankee")
+                || args[0].equalsIgnoreCase(prefix + "brim")) {
             Commands.misc.Brankee(channel);
             print("Command '!brankee', '!yankee' or '!brim' used by " + member.getEffectiveName());
 
-        } else if (args[0].equals(prefix + "stupid")) {
+        } else if (args[0].contains("kerchew")
+                || args[0].contains("kachow")
+                || args[0].contains("kerchoo")) {
+            Commands.misc.Kachow(channel);
+            print("Command '!kerchoo', `kachow`, `kerchew` used by " + member.getEffectiveName());
+
+        } else if (args[0].equalsIgnoreCase(prefix + "stupid")) {
             Commands.misc.Stupid(member, channel);
             print("Command '!stupid' used by " + member.getEffectiveName());
 
-        } else if (args[0].equals(prefix + "dora")) {
+        } else if (args[0].equalsIgnoreCase(prefix + "dora")) {
             Commands.misc.Dora(member, channel);
             print("Command '!dora' used by " + member.getEffectiveName());
 
-        } else if (args[0].equals(prefix + "test")) {
+        } else if (args[0].equalsIgnoreCase(prefix + "test")) {
             switch (args[1]) {
                 case "start":
                     Commands.test.Start(guild, member, channel);
                     print("Command '!test start' used by " + member.getEffectiveName());
                     break;
                 case "stop":
-                    Commands.test.Stop(guild, member, channel);
+                    Commands.test.Stop(guild, member, channel, true);
                     print("Command '!test stop' used by " + member.getEffectiveName());
                     break;
                 case "done":
@@ -152,21 +164,24 @@ public class Listener extends ListenerAdapter {
                     break;
             }
         }
+        else if (args[0].startsWith("!")) {
+            channel.sendMessage("That is not a command!\nUse `!help` for help").queue();
+        }
 
 //        else if (args[0].contains(prefix + "py"))
 //            Commands.pro.Python(event);
 
-//        else if (args[0].equals(prefix + "java"))
+//        else if (args[0].equalsIgnoreCase(prefix + "java"))
 //            Commands.pro.Java(event);
-        
-//        else if (args[0].equals(prefix + "testing")) {
+
+//        else if (args[0].equalsIgnoreCase(prefix + "testing")) {
 //            try {
 //                if (args[1] != null) {
-//                    if (args[1].equals("start") || args[1].equals("true")) {
+//                    if (args[1].equalsIgnoreCase("start") || args[1].equalsIgnoreCase("true")) {
 //                        isTesting = true;
 //                        channel.sendMessage("Testing mode started").queue();
 //
-//                    } else if (args[1].equals("stop") || args[1].equals("false")) {
+//                    } else if (args[1].equalsIgnoreCase("stop") || args[1].equalsIgnoreCase("false")) {
 //                        isTesting = false;
 //                        channel.sendMessage("Testing mode stopped").queue();
 //
@@ -185,5 +200,4 @@ public class Listener extends ListenerAdapter {
     protected void print(String s) {
         System.out.println(s);
     }
-
 }

@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class Logger {
-    String filename = "";
+    String filename;
     String path = "\\home\\christian\\csbot\\";
 //    String path = "tmp_programs\\";
     public Logger(String filename) {
@@ -19,7 +19,7 @@ public class Logger {
             }
         } catch (IOException e) {
             System.out.println("An error occurred.");
-            SlackMessage.SendSlackMessage("Logger file creation failed");
+            SlackMessage.send("Logger file creation failed");
             e.printStackTrace();
         }
     }

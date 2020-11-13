@@ -16,14 +16,14 @@ import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static com.shadow.csBot.SlackMessage.SendSlackMessage;
+import static com.shadow.csBot.SlackMessage.send;
 
 public class CSBot {
 
     private static final String token = "NzcxMDc2ODI1MDk4NjE2ODky.X5m3QQ.rYzOFubhA7QYW1ikNOELSpQDqSA";
     public static final String webhook = "https://hooks.slack.com/services/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";
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         String hostname = "Unknown";
         String localIp = "Unknown";
         String ip = "Unknown";
@@ -47,7 +47,7 @@ public class CSBot {
                         .setActivity(Activity.watching("you"))
                         .build();
 
-                SendSlackMessage("CSBot instance started:\non: "
+                send("CSBot instance started:\non: "
                         + hostname
                         + "\nat: "
                         + localIp
@@ -57,11 +57,11 @@ public class CSBot {
                         + dtf.format(now));
 
             } catch (LoginException e) {
-                SendSlackMessage("Login to CSBot failed");
+                send("Login to CSBot failed");
                 e.printStackTrace();
             }
         } catch (UnknownHostException e) {
-            SendSlackMessage("Hostname can not be resolved");
+            send("Hostname can not be resolved");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,20 +70,18 @@ public class CSBot {
         String finalLocalIp = localIp;
         String finalIp = ip;
 
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            public void run() {
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm:ss");
-                LocalDateTime now = LocalDateTime.now();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
 
-                SendSlackMessage("CSBot instance stopped:\non: "
-                        + finalHostname
-                        + "\nat: "
-                        + finalLocalIp
-                        + "\nat: "
-                        + finalIp
-                        + "\non: "
-                        + dtf.format(now));
-            }
+            send("CSBot instance stopped:\non: "
+                    + finalHostname
+                    + "\nat: "
+                    + finalLocalIp
+                    + "\nat: "
+                    + finalIp
+                    + "\non: "
+                    + dtf.format(now));
         }));
     }
 }
