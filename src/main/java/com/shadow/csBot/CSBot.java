@@ -20,8 +20,8 @@ import static com.shadow.csBot.SlackMessage.send;
 
 public class CSBot {
 
-    private static final String token = "NzcxMDc2ODI1MDk4NjE2ODky.X5m3QQ.rYzOFubhA7QYW1ikNOELSpQDqSA";
-    public static final String webhook = "https://hooks.slack.com/services/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";
+    private static final String token = "";
+    public static final String webhook = "";
 
     public static void main(String[] args) {
         String hostname = "Unknown";
